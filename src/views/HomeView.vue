@@ -1,9 +1,10 @@
 <script setup>
-import TheWelcome from '../components/TheWelcome.vue'
+import Button from 'primevue/button';
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    Links Manager
+    <Button label="Submit" severity="warn"/>
   </main>
 </template>
