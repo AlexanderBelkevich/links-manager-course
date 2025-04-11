@@ -1,11 +1,13 @@
 <script setup>
-import {ref} from 'vue'
-import Tabs from 'primevue/tabs';
-import TabList from 'primevue/tablist';
-import Tab from 'primevue/tab';
-import TabPanels from 'primevue/tabpanels';
-import TabPanel from 'primevue/tabpanel';
+import { ref } from 'vue'
+import Tabs from 'primevue/tabs'
+import TabList from 'primevue/tablist'
+import Tab from 'primevue/tab'
+import TabPanels from 'primevue/tabpanels'
+import TabPanel from 'primevue/tabpanel'
 import LoginForm from '@/components/AuthForm/LoginForm.vue'
+import RegistrationForm from '@/components/AuthForm/RegistrationForm.vue'
+import ResetPasswordForm from '@/components/AuthForm/ResetPasswordForm.vue'
 
 const activeTab = ref('signin') // signin | signup | reset
 </script>
@@ -18,9 +20,14 @@ const activeTab = ref('signin') // signin | signup | reset
     </TabList>
     <TabPanels>
       <TabPanel value="signin">
-        <LoginForm/>
+        <LoginForm @resetPassword="activeTab = 'reset'" />
       </TabPanel>
-      <TabPanel value="signup">Регистрация (контент)</TabPanel>
+      <TabPanel value="signup">
+        <RegistrationForm />
+      </TabPanel>
+      <TabPanel value="reset">
+        <ResetPasswordForm />
+      </TabPanel>
     </TabPanels>
   </Tabs>
 </template>

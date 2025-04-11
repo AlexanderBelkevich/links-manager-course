@@ -3,10 +3,10 @@ import { ref } from 'vue'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 
-const emits = defineEmits(['resetPassword'])
 const formData = ref({
   email: '',
   password: '',
+  firstname: '',
 })
 </script>
 
@@ -30,9 +30,17 @@ const formData = ref({
         class="w-full"
       />
     </div>
-    <span class="cursor-pointer mb-3 block" @click="emits('resetPassword')">Забыли пароль?</span>
+    <div class="mb-3">
+      <InputText
+        name="firstname"
+        placeholder="Введите свое имя"
+        type="text"
+        v-model="formData.firstname"
+        class="w-full"
+      />
+    </div>
     <div class="grid grid-cols-2 gap-3">
-      <Button type="submit" class="w-full" label="Вход" />
+      <Button type="submit" class="w-full" label="Регистрация" />
       <Button type="submit" icon="pi pi-github" class="w-full" label="GitHub" severity="contrast" />
     </div>
   </form>
