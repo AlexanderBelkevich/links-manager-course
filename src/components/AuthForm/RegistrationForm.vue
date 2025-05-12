@@ -8,6 +8,7 @@ import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Message from 'primevue/message'
 import Toast from 'primevue/toast'
+import { supabase } from '@/supabase.js'
 
 const toast = useToast()
 
@@ -28,7 +29,23 @@ const resolver = ref(zodResolver(rules))
 const submitForm = async ({ valid }) => {
   if (!valid) return
 
-  toast.add({ severity: 'info', summary: 'Регистрация ', detail: 'Все хорошо', life: 3000 })
+  const { data, error } = await supabase.auth.signUp({
+    email: formData.value.email,
+    password: formData.value.password,
+  })
+
+  if (error) {
+    toast.add({ severity: 'error', summary: 'Ошибка ', detail: error, life: 3000 })
+  } else {
+    toast.add({
+      severity: 'success',
+      summary: 'Регистрация ',
+      detail: 'Вы успешно зарегистрированы',
+      life: 3000,
+    })
+  }
+
+  console.log(data, error)
 }
 </script>
 
