@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { z } from 'zod'
 import { zodResolver } from '@primevue/forms/resolvers/zod'
-import { useToast } from 'primevue/usetoast'
+import { useToastNofitications } from '@/composables/useToastNofitications.js'
 import { Form } from '@primevue/forms'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
@@ -10,7 +10,7 @@ import Message from 'primevue/message'
 import Toast from 'primevue/toast'
 import { supabase } from '@/supabase.js'
 
-const toast = useToast()
+const { showToast } = useToastNofitications()
 
 const formData = ref({
   email: '',
@@ -21,7 +21,7 @@ const formData = ref({
 const rules = z.object({
   firstname: z.string().min(1, { message: 'Имя обязательно для заполнения' }),
   email: z.string().email({ message: 'Некорректный email' }),
-  password: z.string().min(6, { message: 'Должно быть минимум 6 символов' }),
+  password: z.string().min(5, { message: 'Должно быть минимум 6 символов' }),
 })
 
 const resolver = ref(zodResolver(rules))
@@ -35,14 +35,9 @@ const submitForm = async ({ valid }) => {
   })
 
   if (error) {
-    toast.add({ severity: 'error', summary: 'Ошибка ', detail: error, life: 3000 })
+    showToast('error', 'Ошибка', error)
   } else {
-    toast.add({
-      severity: 'success',
-      summary: 'Регистрация ',
-      detail: 'Вы успешно зарегистрированы',
-      life: 3000,
-    })
+    showToast('success', 'Регистрация', 'Вы успешно зарегистрированы')
   }
 
   console.log(data, error)
