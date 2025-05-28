@@ -2,10 +2,15 @@
 import { ref } from 'vue'
 import { z } from 'zod'
 import { zodResolver } from '@primevue/forms/resolvers/zod'
+import { useToastNofitications } from '@/composables/useToastNofitications.js'
+import { useAuth } from '@/composables/useAuth.js'
 import { Form } from '@primevue/forms'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Message from 'primevue/message'
+
+const { showToast } = useToastNofitications()
+const { signIn, loading, errorMessage } = useAuth()
 
 const emits = defineEmits(['resetPassword'])
 const formData = ref({
@@ -21,7 +26,16 @@ const rules = z.object({
 const resolver = ref(zodResolver(rules))
 
 const submitForm = async ({ valid }) => {
-  console.log(valid)
+  if (!valid) return
+
+  try {
+    await signIn({
+      email: formData.value.email,
+      password: formData.value.password,
+    })
+  } catch {
+    showToast('error', 'Ошибка входа', errorMessage.value)
+  }
 }
 </script>
 
