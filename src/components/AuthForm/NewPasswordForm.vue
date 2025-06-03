@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { z } from 'zod'
 import { zodResolver } from '@primevue/forms/resolvers/zod'
 import { useToastNofitications } from '@/composables/useToastNofitications.js'
@@ -11,6 +12,7 @@ import Message from 'primevue/message'
 
 const { showToast } = useToastNofitications()
 const { updatePassword, loading, errorMessage } = useAuth()
+const router = useRouter()
 
 const password = ref('')
 
@@ -25,6 +27,7 @@ const submitForm = async ({ valid }) => {
 
   try {
     await updatePassword(password.value)
+    router.replace('/auth')
   } catch {
     showToast('error', 'Ошибка при создании нового пароля', errorMessage.value)
   }
