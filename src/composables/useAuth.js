@@ -28,12 +28,19 @@ export function useAuth() {
 
   const resetPassword = async (email) => {
     return await handleRequest(async () => {
-      console.log(email)
       const { data, error } = await supabase.auth.resetPasswordForEmail(email)
       if (error) throw error
       return data
     })
   }
 
-  return { signUp, signIn, resetPassword, loading, errorMessage }
+  const updatePassword = async (password) => {
+    return await handleRequest(async () => {
+      const { data, error } = await supabase.auth.updateUser({ password })
+      if (error) throw error
+      return data
+    })
+  }
+
+  return { signUp, signIn, resetPassword, updatePassword, loading, errorMessage }
 }
