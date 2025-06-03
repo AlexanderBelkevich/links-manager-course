@@ -2,12 +2,12 @@
 import { ref } from 'vue'
 import { z } from 'zod'
 import { zodResolver } from '@primevue/forms/resolvers/zod'
+import { useToastNofitications } from '@/composables/useToastNofitications.js'
+import { useAuth } from '@/composables/useAuth.js'
 import { Form } from '@primevue/forms'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Message from 'primevue/message'
-import { useToastNofitications } from '@/composables/useToastNofitications.js'
-import { useAuth } from '@/composables/useAuth.js'
 
 const { showToast } = useToastNofitications()
 const { resetPassword, loading, errorMessage } = useAuth()
@@ -25,6 +25,7 @@ const submitForm = async ({ valid }) => {
 
   try {
     await resetPassword(email.value)
+    showToast('success', 'Ссылка для сброса пароля уже на вашей почте')
   } catch {
     showToast('error', 'Ошибка входа', errorMessage.value)
   }
