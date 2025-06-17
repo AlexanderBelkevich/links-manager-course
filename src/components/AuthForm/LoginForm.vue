@@ -1,7 +1,9 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { z } from 'zod'
 import { zodResolver } from '@primevue/forms/resolvers/zod'
+import { useUserStore } from '@/stores/userStore.js'
 import { useToastNofitications } from '@/composables/useToastNofitications.js'
 import { useAuth } from '@/composables/useAuth.js'
 import { Form } from '@primevue/forms'
@@ -10,7 +12,9 @@ import InputText from 'primevue/inputtext'
 import Message from 'primevue/message'
 
 const { showToast } = useToastNofitications()
-const { signIn, loading, errorMessage } = useAuth()
+const { signIn, signInWithGithub, loading, errorMessage } = useAuth()
+const router = useRouter()
+const authStore = useUserStore()
 
 const emits = defineEmits(['resetPassword'])
 const formData = ref({
@@ -33,6 +37,8 @@ const submitForm = async ({ valid }) => {
       email: formData.value.email,
       password: formData.value.password,
     })
+    await authStore.getUser()
+    await router.replace({ name: 'home' })
   } catch {
     showToast('error', 'Ошибка входа', errorMessage.value)
   }
@@ -75,7 +81,13 @@ const submitForm = async ({ valid }) => {
     <span class="cursor-pointer mb-3 block" @click="emits('resetPassword')">Забыли пароль?</span>
     <div class="grid grid-cols-2 gap-3">
       <Button type="submit" class="w-full" label="Вход" :loading="loading" />
-      <Button type="submit" icon="pi pi-github" class="w-full" label="GitHub" severity="contrast" />
+      <Button
+        icon="pi pi-github"
+        class="w-full"
+        label="GitHub"
+        severity="contrast"
+        @click="signInWithGithub"
+      />
     </div>
   </Form>
 </template>

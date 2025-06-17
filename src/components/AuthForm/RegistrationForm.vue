@@ -11,7 +11,7 @@ import Message from 'primevue/message'
 import Toast from 'primevue/toast'
 
 const { showToast } = useToastNofitications()
-const { signUp, loading, errorMessage } = useAuth()
+const { signUp, signInWithGithub, loading, errorMessage } = useAuth()
 
 const formData = ref({
   email: '',
@@ -90,7 +90,13 @@ const submitForm = async ({ valid }) => {
     </div>
     <div class="grid grid-cols-2 gap-3">
       <Button type="submit" class="w-full" label="Регистрация" :loading="loading" />
-      <Button type="submit" icon="pi pi-github" class="w-full" label="GitHub" severity="contrast" />
+      <Button
+        icon="pi pi-github"
+        class="w-full"
+        label="GitHub"
+        severity="contrast"
+        @click="signInWithGithub"
+      />
     </div>
   </Form>
 </template>
