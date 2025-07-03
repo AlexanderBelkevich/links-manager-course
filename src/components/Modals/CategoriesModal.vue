@@ -51,8 +51,19 @@ const getCategories = async () => {
   }
 }
 
-const deleteCategory = (id) => {
-  console.log('deleteCategory', id)
+const deleteCategory = async (id) => {
+  isLoadingModal.value = true
+  try {
+    const { error } = await supabase.from('categories').delete().eq('id', id)
+    if (error) throw error
+
+    listCategories.value = listCategories.value.filter((category) => category.id !== id)
+    showToast('success', 'Успех', 'Категория удалена')
+  } catch {
+    showToast('error', 'Ошибка', 'Не удалось удалить категорию')
+  } finally {
+    isLoadingModal.value = false
+  }
 }
 
 watch(modelValue, async (newValue) => {
