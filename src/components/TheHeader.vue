@@ -1,18 +1,38 @@
 <script setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore.js'
+import { useAuth } from '@/composables/useAuth.js'
+import { useToastNofitications } from '@/composables/useToastNofitications.js'
 import Button from 'primevue/button'
 import Avatar from 'primevue/avatar'
 import Menubar from 'primevue/menubar'
+import CategoriesModal from '@/components/Modals/CategoriesModal.vue'
 
 const authStore = useUserStore()
+const { showToast } = useToastNofitications()
+const router = useRouter()
+const { signOut, errorMessage } = useAuth()
+
+const categoriesDialogVisible = ref(false)
 
 const emailFirstLetter = computed(() => {
   return authStore.user?.email ? authStore.user.email[0].toUpperCase() : ''
 })
+
+const signOutUser = async () => {
+  try {
+    await signOut()
+    authStore.resetUser()
+    await router.replace({ name: 'auth' })
+  } catch (err) {
+    showToast('error', 'Ошибка выхода', errorMessage.value)
+  }
+}
 </script>
 
 <template>
+  <CategoriesModal v-model="categoriesDialogVisible" />
   <div class="mb-5">
     <Menubar>
       <template #start>
@@ -20,14 +40,14 @@ const emailFirstLetter = computed(() => {
           <span class="font-bold">Link Manager</span>
           <div class="flex items-center gap-2">
             <Button icon="pi pi-link" rounded />
-            <Button icon="pi pi-folder" rounded />
+            <Button icon="pi pi-folder" rounded @click="categoriesDialogVisible = true" />
           </div>
         </div>
       </template>
       <template #end>
         <div class="flex items-center gap-2">
           <Avatar :label="emailFirstLetter" size="large" shape="circle" />
-          <Button icon="pi pi-sign-out" rounded severity="secondary" />
+          <Button icon="pi pi-sign-out" rounded severity="secondary" @click="signOutUser" />
         </div>
       </template>
     </Menubar>
