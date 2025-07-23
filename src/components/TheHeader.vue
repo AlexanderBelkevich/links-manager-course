@@ -8,6 +8,7 @@ import Button from 'primevue/button'
 import Avatar from 'primevue/avatar'
 import Menubar from 'primevue/menubar'
 import CategoriesModal from '@/components/Modals/CategoriesModal.vue'
+import CreateLinkModal from '@/components/Modals/CreateLinkModal.vue'
 
 const authStore = useUserStore()
 const { showToast } = useToastNofitications()
@@ -15,6 +16,7 @@ const router = useRouter()
 const { signOut, errorMessage } = useAuth()
 
 const categoriesDialogVisible = ref(false)
+const createLinkDialogVisible = ref(false)
 
 const emailFirstLetter = computed(() => {
   return authStore.user?.email ? authStore.user.email[0].toUpperCase() : ''
@@ -33,13 +35,14 @@ const signOutUser = async () => {
 
 <template>
   <CategoriesModal v-model="categoriesDialogVisible" />
+  <CreateLinkModal v-model="createLinkDialogVisible" />
   <div class="mb-5">
     <Menubar>
       <template #start>
         <div class="flex items-center gap-2">
           <span class="font-bold">Link Manager</span>
           <div class="flex items-center gap-2">
-            <Button icon="pi pi-link" rounded />
+            <Button icon="pi pi-link" rounded @click="createLinkDialogVisible = true" />
             <Button icon="pi pi-folder" rounded @click="categoriesDialogVisible = true" />
           </div>
         </div>
