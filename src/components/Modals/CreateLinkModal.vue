@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { zodResolver } from '@primevue/forms/resolvers/zod'
 import { supabase } from '@/supabase.js'
 import { useToastNofitications } from '@/composables/useToastNofitications.js'
+import { useUserStore } from '@/stores/userStore.js'
 import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
@@ -15,9 +16,12 @@ import Message from 'primevue/message'
 import Toast from 'primevue/toast'
 import Loader from '@/components/Loader.vue'
 
+const userStore = useUserStore()
+
 const modelValue = defineModel()
 const { showToast } = useToastNofitications()
 const isLoading = ref(false)
+const isLoadingButton = ref(false)
 
 const rules = z.object({
   name: z.string().min(1, { message: 'Название обязательно для заполнение' }),
@@ -36,6 +40,16 @@ const formInputs = ref({
 
 const listCategories = ref([])
 
+const clear = () => {
+  formInputs.value = {
+    name: '',
+    url: '',
+    description: '',
+    category: null,
+    isFavorite: false,
+  }
+}
+
 const getCategories = async () => {
   try {
     const { data, error } = await supabase.from('categories').select()
@@ -47,14 +61,50 @@ const getCategories = async () => {
   }
 }
 
-const submitForm = () => {
-  console.log('saveLink')
-}
-
 const loadModal = async () => {
   isLoading.value = true
   await getCategories()
   isLoading.value = false
+}
+
+const getDomain = (url) => {
+  const { hostname } = new URL(url)
+  const parts = hostname.split('.')
+  if (parts.length > 2) {
+    return parts.slice(-2).join('.')
+  }
+  return hostname
+}
+
+const addNewLink = async () => {
+  isLoadingButton.value = true
+  const hostname = getDomain(formInputs.value.url)
+  const payload = {
+    name: formInputs.value.name,
+    url: formInputs.value.url,
+    description: formInputs.value.description,
+    category: formInputs.value.category.id,
+    click_count: 0,
+    is_favorite: formInputs.value.isFavorite,
+    preview_image: `https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${hostname}&size=32`,
+    user_id: userStore.user.id,
+  }
+
+  try {
+    const { error } = await supabase.from('links').insert(payload).select()
+    if (error) throw error
+    modelValue.value = false
+    clear()
+    showToast('success', 'Успех', 'Ссылка добавлена')
+  } catch {
+    showToast('error', 'Ошибка', 'Не удалось добавить ссылку')
+  } finally {
+    isLoadingButton.value = false
+  }
+}
+
+const submitForm = async () => {
+  await addNewLink()
 }
 
 watch(modelValue, async (newValue) => {
@@ -123,7 +173,7 @@ watch(modelValue, async (newValue) => {
           <label for="isFavorite">Добавить в избранное</label>
         </div>
         <div class="flex justify-end gap-2 mt-4">
-          <Button label="Добавить" type="submit" />
+          <Button label="Добавить" :loading="isLoadingButton" type="submit" />
         </div>
       </template>
     </Form>
