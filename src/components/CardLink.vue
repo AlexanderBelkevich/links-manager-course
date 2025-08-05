@@ -60,7 +60,7 @@ const copyToClipboard = async () => {
 </script>
 
 <template>
-  <Toast />
+  <Toast group="s" />
   <Card class="relative">
     <template #title>
       <div class="flex items-center gap-2 pr-10">
