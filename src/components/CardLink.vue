@@ -30,7 +30,7 @@ const itemsMenuButton = ref([
     label: 'Скопировать',
     icon: 'pi pi-link',
     command: () => {
-      console.log('copy')
+      copyToClipboard()
     },
   },
   {
@@ -48,6 +48,15 @@ const itemsMenuButton = ref([
     },
   },
 ])
+
+const copyToClipboard = async () => {
+  try {
+    await navigator.clipboard.writeText(props.link.url)
+    showToast('success', `Успешно`, `Скопировано ${props.link.name}`)
+  } catch {
+    showToast('error', 'Ошибка при копировании')
+  }
+}
 </script>
 
 <template>
