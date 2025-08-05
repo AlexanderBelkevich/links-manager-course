@@ -1,8 +1,13 @@
 <script setup>
 import { onMounted } from 'vue'
+import { useLinksStore } from '@/stores/linksStore'
 import Button from 'primevue/button'
+import Loader from '@/components/Loader.vue'
 
-onMounted(() => {
+const linksStore = useLinksStore()
+
+onMounted(async () => {
+  console.log('sds')
   if (window.location.hash) {
     const hashParams = new URLSearchParams(window.location.hash.substring(1))
     const accessToken = hashParams.get('access_token')
@@ -11,12 +16,18 @@ onMounted(() => {
       window.history.replaceState(null, null, window.location.pathname)
     }
   }
+  await linksStore.fetchLinks()
 })
 </script>
 
 <template>
-  <main>
-    Links Manager
-    <Button label="Submit" severity="warn" />
-  </main>
+  <!--  <LinksFilter v-if="linksStore.links.length" />-->
+  <Loader v-if="linksStore.isLoading" />
+  <!-- НЕ ЗАБЫТЬ ВЫШЕ ДОБАВИТЬ && linksStore.offset === 0 !-->
+  <div v-else>
+    <h2 v-if="!linksStore.links.length" class="font-bold text-center">
+      Вы пока еще не добавили ссылок
+    </h2>
+    <template v-else> Здесь будут ссылки </template>
+  </div>
 </template>
