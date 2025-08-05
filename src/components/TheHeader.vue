@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore.js'
 import { useAuth } from '@/composables/useAuth.js'
-import { useToastNofitications } from '@/composables/useToastNofitications.js'
+import { useToastNotifications } from '@/composables/useToastNotifications.js'
 import Button from 'primevue/button'
 import Avatar from 'primevue/avatar'
 import Menubar from 'primevue/menubar'
@@ -11,7 +11,7 @@ import CategoriesModal from '@/components/Modals/CategoriesModal.vue'
 import CreateLinkModal from '@/components/Modals/CreateLinkModal.vue'
 
 const authStore = useUserStore()
-const { showToast } = useToastNofitications()
+const { showToast } = useToastNotifications()
 const router = useRouter()
 const { signOut, errorMessage } = useAuth()
 

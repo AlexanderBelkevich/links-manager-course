@@ -4,14 +4,14 @@ import { useRouter } from 'vue-router'
 import { z } from 'zod'
 import { zodResolver } from '@primevue/forms/resolvers/zod'
 import { useUserStore } from '@/stores/userStore.js'
-import { useToastNofitications } from '@/composables/useToastNofitications.js'
+import { useToastNotifications } from '@/composables/useToastNotifications.js'
 import { useAuth } from '@/composables/useAuth.js'
 import { Form } from '@primevue/forms'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Message from 'primevue/message'
 
-const { showToast } = useToastNofitications()
+const { showToast } = useToastNotifications()
 const { signIn, signInWithGithub, loading, errorMessage } = useAuth()
 const router = useRouter()
 const authStore = useUserStore()

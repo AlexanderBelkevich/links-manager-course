@@ -3,6 +3,7 @@ import { onMounted } from 'vue'
 import { useLinksStore } from '@/stores/linksStore'
 import Button from 'primevue/button'
 import Loader from '@/components/Loader.vue'
+import CardLink from '@/components/CardLink.vue'
 
 const linksStore = useLinksStore()
 
@@ -28,6 +29,10 @@ onMounted(async () => {
     <h2 v-if="!linksStore.links.length" class="font-bold text-center">
       Вы пока еще не добавили ссылок
     </h2>
-    <template v-else> Здесь будут ссылки </template>
+    <template v-else>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <CardLink v-for="link in linksStore.links" :key="link.id" :link="link" />
+      </div>
+    </template>
   </div>
 </template>
