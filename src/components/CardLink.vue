@@ -46,7 +46,12 @@ const itemsMenuButton = ref([
     label: 'Удалить',
     icon: 'pi pi-trash',
     command: async () => {
-      console.log('remove link')
+      try {
+        await linksStore.removeLink(props.link.id)
+        showToast('success', 'Успешно', 'Ссылка удалена')
+      } catch {
+        showToast('error', 'Ошибка')
+      }
     },
   },
 ])
@@ -63,6 +68,10 @@ const copyToClipboard = async () => {
     showToast('error', 'Ошибка при копировании')
   }
 }
+
+const openLink = () => {
+  linksStore.addClickCount(props.link.id)
+}
 </script>
 
 <template>
@@ -70,7 +79,7 @@ const copyToClipboard = async () => {
     <template #title>
       <div class="flex items-center gap-2 pr-10">
         <img :src="link.preview_image" :alt="link.name" />
-        <a :href="link.url" target="_blank">{{ link.name }}</a>
+        <a :href="link.url" target="_blank" @click="openLink">{{ link.name }}</a>
         <SpeedDial
           :model="itemsMenuButton"
           :tooltipOptions="{ position: 'left' }"
