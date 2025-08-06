@@ -9,7 +9,6 @@ export const useLinksStore = defineStore('links', () => {
 
   const fetchLinks = async () => {
     isLoading.value = true
-    console.log(isLoading.value)
     const { data, error } = await supabase
       .from('links')
       .select(
@@ -22,10 +21,24 @@ export const useLinksStore = defineStore('links', () => {
     isLoading.value = false
   }
 
+  const changeIsFavorite = async (id) => {
+    const index = links.value.findIndex((link) => link.id === id)
+    if (index !== -1) {
+      const newFavorite = !links.value[index].is_favorite
+      const { error } = await supabase
+        .from('links')
+        .update({ is_favorite: newFavorite })
+        .eq('id', id)
+      if (error) throw error
+      links.value[index].is_favorite = newFavorite
+    }
+  }
+
   return {
     isLoading,
     links,
     fetchLinks,
+    changeIsFavorite,
   }
 })
 

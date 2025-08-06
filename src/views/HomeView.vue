@@ -8,7 +8,6 @@ import CardLink from '@/components/CardLink.vue'
 const linksStore = useLinksStore()
 
 onMounted(async () => {
-  console.log('sds')
   if (window.location.hash) {
     const hashParams = new URLSearchParams(window.location.hash.substring(1))
     const accessToken = hashParams.get('access_token')
@@ -22,9 +21,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <!--  <LinksFilter v-if="linksStore.links.length" />-->
   <Loader v-if="linksStore.isLoading" />
-  <!-- НЕ ЗАБЫТЬ ВЫШЕ ДОБАВИТЬ && linksStore.offset === 0 !-->
   <div v-else>
     <h2 v-if="!linksStore.links.length" class="font-bold text-center">
       Вы пока еще не добавили ссылок

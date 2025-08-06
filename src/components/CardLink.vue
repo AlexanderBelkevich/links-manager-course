@@ -1,15 +1,12 @@
 <script setup>
 import { ref, computed } from 'vue'
 import Card from 'primevue/card'
-import Toast from 'primevue/toast'
 import SpeedDial from 'primevue/speeddial'
 import { useToastNotifications } from '@/composables/useToastNotifications.js'
 import { useLinksStore } from '@/stores/linksStore'
-import CreateLinkModal from './Modals/CreateLinkModal.vue'
 
 const linksStore = useLinksStore()
 const { showToast } = useToastNotifications()
-const createLinkDialogVisible = ref(false)
 
 const props = defineProps({
   link: {
@@ -23,7 +20,12 @@ const itemsMenuButton = ref([
     label: 'Избранное',
     icon: 'pi pi-star',
     command: async () => {
-      console.log('add to favorite')
+      try {
+        await linksStore.changeIsFavorite(props.link.id)
+        showToast('success', 'Успешно', 'Изменения сохранены')
+      } catch {
+        showToast('error', 'Ошибка')
+      }
     },
   },
   {
@@ -49,6 +51,10 @@ const itemsMenuButton = ref([
   },
 ])
 
+const isFavoriteBgCard = computed(() => {
+  return props.link.is_favorite ? 'var(--p-button-outlined-warn-hover-background' : ''
+})
+
 const copyToClipboard = async () => {
   try {
     await navigator.clipboard.writeText(props.link.url)
@@ -60,8 +66,7 @@ const copyToClipboard = async () => {
 </script>
 
 <template>
-  <Toast group="s" />
-  <Card class="relative">
+  <Card class="relative" :style="{ backgroundColor: isFavoriteBgCard }">
     <template #title>
       <div class="flex items-center gap-2 pr-10">
         <img :src="link.preview_image" :alt="link.name" />
