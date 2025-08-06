@@ -7,6 +7,7 @@ export const useLinksStore = defineStore('links', () => {
   const isLoading = ref(false)
   const links = ref([])
   const onlyFavorites = ref(false)
+  const sortByPopular = ref(false)
 
   const fetchLinks = async () => {
     isLoading.value = true
@@ -17,9 +18,13 @@ export const useLinksStore = defineStore('links', () => {
         .select(
           'id, name, url, description, is_favorite, preview_image, categories (id, name), click_count',
         )
-        .order('created_at', { ascending: false })
 
       if (onlyFavorites.value) query = query.eq('is_favorite', true)
+      if (sortByPopular.value) {
+        query = query.order('click_count', { ascending: false })
+      } else {
+        query = query.order('created_at', { ascending: false })
+      }
 
       const { data, error } = await query
       if (error) throw error
@@ -69,6 +74,7 @@ export const useLinksStore = defineStore('links', () => {
     isLoading,
     links,
     onlyFavorites,
+    sortByPopular,
     fetchLinks,
     changeIsFavorite,
     removeLink,
