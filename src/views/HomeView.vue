@@ -22,7 +22,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Loader v-if="linksStore.isLoading" />
+  <Loader v-if="linksStore.isLoading && linksStore.offset === 0" />
   <div v-else>
     <h2 v-if="!linksStore.links.length" class="font-bold text-center">
       Вы пока еще не добавили ссылок
@@ -31,6 +31,14 @@ onMounted(async () => {
       <Filters />
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <CardLink v-for="link in linksStore.links" :key="link.id" :link="link" />
+      </div>
+      <div class="flex justify-center mt-3">
+        <Button
+          v-if="linksStore.hasMore"
+          label="Показать еще"
+          :loading="linksStore.isLoading"
+          @click="linksStore.fetchLinks()"
+        />
       </div>
     </template>
   </div>

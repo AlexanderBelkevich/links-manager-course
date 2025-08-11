@@ -164,7 +164,7 @@ const submitForm = async () => {
   } else {
     await addNewLink()
   }
-  await linksStore.fetchLinks()
+  await linksStore.fetchLinks(true, true)
 }
 
 const textButton = computed(() => {
