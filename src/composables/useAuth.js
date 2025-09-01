@@ -9,8 +9,12 @@ export function useAuth() {
         email,
         password,
       })
-      await supabase.from('users').insert([{ id: data.user.id, firstname, email }])
       if (error) throw error
+      
+      if (data.user) {
+        await supabase.from('users').insert([{ id: data.user.id, firstname, email }])
+      }
+      
       return data
     })
   }
